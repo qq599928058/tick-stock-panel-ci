@@ -19,11 +19,17 @@ const _redirectToLogin = (() => {
     const is401 = msg.includes('未登录') || msg.includes('会话已过期') || msg.includes('401')
     const isNotInit = msg.includes('尚未初始化访问密码') || msg.includes('NOT_INITIALIZED')
     if (!is401 && !isNotInit) return
+    // 子路径部署(nginx /panel/)时，登录页自身也要带前缀，否则会跳到 easy_tdx 的根路径上（踩过：
+    // 未登录访问 /panel/ 被弹到 https://host:8000/login，那是另一个应用，看着就像"密码不对"）。
+    // redirect 参数交给 react-router 处理（它按 basename 还原），所以传的是**不带前缀**的相对路径。
+    const baseUrl = import.meta.env.BASE_URL || '/'
+    const loginPath = `${baseUrl}login`
     // 已在登录页则不跳(避免死循环)
-    if (window.location.pathname === '/login') return
+    if (window.location.pathname === loginPath) return
     redirecting = true
-    const redirect = encodeURIComponent(window.location.pathname + window.location.search)
-    window.location.href = `/login?redirect=${redirect}`
+    const rel = window.location.pathname.slice(baseUrl.length - 1) + window.location.search
+    const redirect = encodeURIComponent(rel)
+    window.location.href = `${loginPath}?redirect=${redirect}`
   }
 })()
 
