@@ -2,7 +2,7 @@
  * AI 配置徽标右侧的助手入口 — DOM 锚定实现, 不改核心文件。
  *
  * 核心侧栏头部没有扩展槽位; 为保持「零核心修改」, 此处以
- * a[href='/settings?tab=ai'](核心 AIConfigBadge) 为锚点, 把一个
+ * a[href$='/settings?tab=ai'](核心 AIConfigBadge) 为锚点, 把一个
  * fixed 小按钮 portal 到 document.body, 定位到徽标行最右侧,
  * 用 ResizeObserver(徽标 + aside) 与 window resize 跟随布局。
  * 锚点不存在或不可见(侧栏收起/隐藏、核心改版)时不渲染 — fail-closed。
@@ -13,7 +13,7 @@ import { MessagesSquare } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { toggleAssistant, useAssistantStore } from '../store'
 
-const ANCHOR_SELECTOR = "a[href='/settings?tab=ai']"
+const ANCHOR_SELECTOR = "a[href$='/settings?tab=ai']"  // 兼容子路径部署(/panel/settings?tab=ai)
 const BTN = 22 // 按钮边长(px)
 
 interface AnchorSpot {

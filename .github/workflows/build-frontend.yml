@@ -31,7 +31,9 @@ jobs:
 
       - name: pnpm build
         working-directory: frontend
-        run: pnpm build
+        # 以 /panel/ 为 base 构建：本机只有 8000 端口对外可达（3083/3084 实测外部超时），
+        # 面板要挂在 https://<host>:8000/panel/，所以静态资源与路由都要带这个前缀。
+        run: pnpm exec vite build --base=/panel/
 
       - name: 上传 dist
         uses: actions/upload-artifact@v4

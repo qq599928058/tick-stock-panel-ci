@@ -111,6 +111,11 @@ function OnboardingGuard({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
 
+// 部署在子路径（nginx /panel/）时，vite 的 BASE_URL='/panel/'；react-router 需要对应的 basename，
+// 否则浏览器地址栏与路由前缀对不上（点导航会跳到 easy_tdx 的根路径上去）。
+const _base = import.meta.env.BASE_URL || '/'
+const _routerBase = _base === '/' ? undefined : _base.replace(/\/$/, '')
+
 export const router = createBrowserRouter([
   { path: '/onboarding', element: <Onboarding /> },
   { path: '/login', element: <Auth /> },
@@ -165,4 +170,4 @@ export const router = createBrowserRouter([
       }),
     ],
   },
-])
+], { basename: _routerBase })
